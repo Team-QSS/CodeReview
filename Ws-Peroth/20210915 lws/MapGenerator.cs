@@ -59,7 +59,7 @@ public class MapGenerator : MapInitializer
     private int FindNextX(int x, int y, int type)
     {
         if (!CheckMapIndexRange(x + structureTypes[type].x, y + structureTypes[type].y))
-            return -1;
+            return -1;  // 값이 맵 크기를 벗어나면 -1 반환
 
         return x + 1;
     }
@@ -76,9 +76,11 @@ public class MapGenerator : MapInitializer
     {
         for (int x = 0; x < mapX; x++)
         {
-            if (typeMap[y, x] == 0)
+            if (typeMap[y, x] == 0) // 비어있는 공간이면 x를 반환
                 return x;
         }
+
+        // 비어있는 공간을 찾지 못했다면 -1 반환
         return -1;
     }
 
@@ -104,18 +106,21 @@ public class MapGenerator : MapInitializer
 
             for (int j = 0; j < sizeX; j++, tempX++)
             {
-                try
-                {
-                    if (y >= mapY || tempX >= mapX)
-                        return false;
+                // IndexOutOfRangeException 에러 발생 Debug용으로 try - catch를 사용
+                // 현재는 수정하여 에러는 없지만, 혹시나 발생해둘 때를 대비해 넣어둠
+                // 에러가 확실히 발생 안하면 완전히 제거할 에정
+                // try
+                // {
+                if (y >= mapY || tempX >= mapX) // 맵의 범위를 넘어가면 false 반환
+                    return false;
 
-                    if (typeMap[y, tempX] != 0)
-                        return false;
-                }
-                catch (IndexOutOfRangeException e)
-                {
-                    Debug.LogError($"i = {i}, y = {y}, j = {j}, tempX = {tempX}, mapX = {mapX}, mapY = {mapY} \n{e}");
-                }
+                if (typeMap[y, tempX] != 0) // 다른 타입의 블럭이 이미 있으면 flse 반환
+                    return false;
+                // }
+                // catch (IndexOutOfRangeException e)
+                // {
+                //    Debug.LogError($"i = {i}, y = {y}, j = {j}, tempX = {tempX}, mapX = {mapX}, mapY = {mapY} \n{e}");
+                // }
             }
         }
         return true;
@@ -147,9 +152,10 @@ public class MapGenerator : MapInitializer
             tempX = x;
             for (int positionX = 0; positionX < sizeX; positionX++, tempX++)
             {
-                if (!CheckMapIndexRange(tempX, y))
+                if (!CheckMapIndexRange(tempX, y))  // 맵의 범위를 넘어가면 종료
                     break;
 
+                // 값 대입
                 int copyData = target.structure[positionY, positionX];
                 typeMap[y, tempX] = 0;
                 map[y, tempX] = copyData;
@@ -168,7 +174,7 @@ public class MapGenerator : MapInitializer
             tempX = x;
             for (int targetX = 0; targetX < sizeX; targetX++, tempX++)
             {
-                if (!CheckMapIndexRange(tempX, y))
+                if (!CheckMapIndexRange(tempX, y))  // 맵의 범위를 넘어가면 종료
                     break;
 
                 typeMap[y, tempX] = type;
