@@ -18,7 +18,7 @@ public class GameManager : MonoBeHaviour
 	
 	public void CreatePlayer()
 	{
-		_player = Resource.Load<Player>("Player");
+		_player = Resources.Load<Player>("Player");
 		_player = Instantiate(_player, new Vector3(0, 0, 0), true);
 	}
 	
